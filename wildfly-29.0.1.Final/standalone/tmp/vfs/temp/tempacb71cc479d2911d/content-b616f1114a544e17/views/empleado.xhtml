@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>#{tittle}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"/>
+</h:head>
+
+<h:body>
+    <div class="container">
+        <br/>
+
+        <div class="card">
+            <h:form>
+                <p:menubar>
+                    <p:growl id="messages"/>
+                    <p:menuitem value="Regresar a Inicio" icon="pi pi-home" outcome="/index.xhtml"/>
+                    <p:menuitem value="Crear Empleado" icon="pi pi-plus"
+                                oncomplete="PF('modalEmpleado').show()"/>
+                </p:menubar>
+            </h:form>
+        </div>
+
+
+        <h:form id="listaEmpleadosForm">
+            <h:panelGrid border="1" class="table">
+                <f:facet name="header" class="bg-secondary">
+                    <div class="products-table-header d-flex justify-content-center font-weight-bold h4">
+                        <span class="text-center">EMPLEADOS</span>
+                    </div>
+                </f:facet>
+
+                <p:commandButton value="Crear Empleado" styleClass="ui-button-raised ui-button-secondary ui-button-flat"
+                                 oncomplete="PF('modalEmpleado').show()" icon="pi pi-plus" />
+
+                <p:dataTable id="empleadoTable"
+                             value="#{empleadoController.listadoEmpleados}"
+                             var="employee"
+                             paginator="true" rows="10"
+                             paginatorPosition="bottom">
+                    <p:column headerText="Documento Tipo">
+                        <h:outputText value="#{employee.documentoTipo}" />
+                    </p:column>
+                    <p:column headerText="Documento Número">
+                        <h:outputText value="#{employee.documentoNumero}" />
+                    </p:column>
+                    <p:column headerText="Nombres">
+                        <h:outputText value="#{employee.nombres}" />
+                    </p:column>
+                    <p:column headerText="Apellidos">
+                        <h:outputText value="#{employee.apellidos}" />
+                    </p:column>
+                    <p:column headerText="Departamento">
+                        <h:outputText value="#{employee.departamento.nombre}" />
+                    </p:column>
+                    <p:column headerText="Ciudad">
+                        <h:outputText value="#{employee.ciudad}" />
+                    </p:column>
+                    <p:column headerText="Dirección">
+                        <h:outputText value="#{employee.direccion}" />
+                    </p:column>
+                    <p:column headerText="Correo Electrónico">
+                        <h:outputText value="#{employee.correoElectronico}" />
+                    </p:column>
+                    <p:column headerText="Teléfono">
+                        <h:outputText value="#{employee.telefono}" />
+                    </p:column>
+                    <p:column headerText="">
+                        <!-- Botón "Editar" que abre el modal con los datos del empleado-->
+                        <p:commandButton  oncomplete="PF('modalEmpleado').show()"
+                                          icon="pi pi-pencil"
+                                          styleClass="edit-button rounded-button ui-button-success"
+                                          action="#{empleadoController.editarEmpleado(employee.id)}"
+                                          update="empleadoModalForm">
+                            <f:setPropertyActionListener value="#{employee}" target="#{empleadoController.empleado}" />
+                        </p:commandButton>
+                        <p:commandButton  class="ui-button-warning rounded-button"
+                                          icon="pi pi-trash"
+                                          update="listaEmpleadosForm" action="#{empleadoController.borrarEmpleado(employee.id)}"
+                                          onclick="return confirm('¿Está seguro que desea eliminar?')" />
+                    </p:column>
+                </p:dataTable>
+            </h:panelGrid>
+        </h:form>
+        <!-- Modal para agregar o editar un empleado -->
+        <p:dialog header="Empleado"
+                  widgetVar="modalEmpleado"
+                  modal="true"
+                  resizable="false"
+                  onHide="limpiarFormularioEmpleado()">
+            <hr/>
+            <h:form id="empleadoModalForm">
+                <h:inputHidden id="id" value="#{empleadoController.empleado.id}" />
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <h:outputLabel for="documentoTipo"  value="Tipo de Documento *" />
+                            <p:selectOneMenu id="documentoTipo" class="form-control" value="#{empleadoController.empleado.documentoTipo}" required="true">
+                                <f:selectItem itemLabel="---Seleccione una opción ---" itemValue="" />
+                                <f:selectItem itemValue="RC" itemLabel="RC" />
+                                <f:selectItem itemValue="TI" itemLabel="TI" />
+                                <f:selectItem itemValue="CC" itemLabel="CC" />
+                                <f:selectItem itemValue="CE" itemLabel="CE" />
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="form-group">
+                            <h:outputLabel for="nombres" value="Nombres *" />
+                            <p:inputText id="nombres" class="form-control" value="#{empleadoController.empleado.nombres}" required="true" />
+                        </div>
+                        <div class="form-group">
+                            <h:outputLabel for="ciudad" value="Ciudad *" />
+                            <p:inputText id="ciudad" class="form-control" value="#{empleadoController.empleado.ciudad}" required="true" />
+                        </div>
+                        <div class="form-group">
+                            <h:outputLabel for="direccion" value="Dirección *" />
+                            <p:inputText id="direccion" class="form-control" value="#{empleadoController.empleado.direccion}" required="true"/>
+                        </div>
+                        <div class="form-group">
+                            <h:outputLabel for="telefono" value="Teléfono *" />
+                            <p:inputText id="telefono" class="form-control" value="#{empleadoController.empleado.telefono}"
+                                         required="true" placeholder="1234567890">
+                                <f:validateLongRange minimum="0" maximum="9999999999"/>
+                            </p:inputText>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <h:outputLabel for="documentoNumero" value="Número de Documento *" />
+                            <p:inputText id="documentoNumero" class="form-control"
+                                         value="#{empleadoController.empleado.documentoNumero}" required="true"  placeholder="1234567890">
+                                <f:validateLongRange minimum="0" maximum="9999999999"/>
+                            </p:inputText>
+                        </div>
+                        <div class="form-group">
+                            <h:outputLabel for="apellidos" value="Apellidos *" />
+                            <p:inputText id="apellidos" class="form-control" value="#{empleadoController.empleado.apellidos}" required="true" />
+                        </div>
+                        <div class="form-group">
+                            <h:outputLabel for="departamento" value="Departamento *" />
+                            <p:selectOneMenu id="departamento" class="form-control" value="#{empleadoController.empleado.departamento}" required="true">
+                                <f:selectItem itemLabel="---Seleccione una opción ---" itemValue="#{null}"/>
+                                <f:selectItems value="#{listadoDepartamentos}" var="dept" itemLabel="#{dept.nombre}" />
+                                <f:converter binding="#{departamentoConverter}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="form-group">
+                            <h:outputLabel for="correoElectronico" value="Correo Electrónico *" />
+                            <p:inputText id="correoElectronico" class="form-control"
+                                         value="#{empleadoController.empleado.correoElectronico}" placeholder="correo@correo.com" required="true">
+                                <f:validateRegex pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" />
+                            </p:inputText>
+                        </div>
+                    </div>
+                </div>
+                <hr/>
+                <div class="d-flex justify-content-end mt-1">
+                    <p:commandButton value="Guardar"
+                                     class="ui-button-primary mr-2" icon="pi pi-check"
+                                     action="#{empleadoController.guardarEmpleado}"
+                                     update="listaEmpleadosForm empleadoModalForm"
+                                     process="@this, empleadoModalForm"
+                                     oncomplete="if (!args.validationFailed) PF('modalEmpleado').hide();" />
+                    <p:commandButton value="Cancelar" class="ui-button-secondary" icon="pi pi-times"
+                                     onclick="PF('modalEmpleado').hide()"
+                                     update="empleadoModalForm"/>
+                </div>
+            </h:form>
+        </p:dialog>
+    </div>
+    <script>
+        function limpiarFormularioEmpleado() {
+            document.getElementById('empleadoModalForm:id').value = '';
+            document.getElementById('empleadoModalForm:documentoTipo').value = '';
+            document.getElementById('empleadoModalForm:documentoNumero').value = '';
+            document.getElementById('empleadoModalForm:nombres').value = '';
+            document.getElementById('empleadoModalForm:apellidos').value = '';
+            document.getElementById('empleadoModalForm:departamento').value = '';
+            document.getElementById('empleadoModalForm:ciudad').value = '';
+            document.getElementById('empleadoModalForm:direccion').value = '';
+            document.getElementById('empleadoModalForm:correoElectronico').value = '';
+            document.getElementById('empleadoModalForm:telefono').value = '';
+        }
+    </script>
+</h:body>
+</html>

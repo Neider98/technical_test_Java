@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Inicio</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"/>
+</h:head>
+<h:body>
+    <div class="container">
+        <br/>
+        <br/>
+        <h:form id="indexForm">
+            <div class="row justify-content-center">
+                <div class="col-md-4">
+                    <p:panel>
+                        <h3 class="text-center mb-2">Menú Principal</h3>
+                        <br/>
+                        <p:commandButton value="Modulo Departamentos" action="/views/departamento.xhtml"
+                                         styleClass="btn btn-primary btn-block" />
+                        <p:spacer height="10" />
+                        <p:commandButton value="Modulo Empleados" action="/views/empleado.xhtml"
+                                         styleClass="btn btn-success btn-block" />
+                    </p:panel>
+                </div>
+            </div>
+        </h:form>
+    </div>
+</h:body>
+</html>
